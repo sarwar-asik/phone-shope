@@ -12,16 +12,26 @@ const displayPhone = phones =>{
 // console.log(phone);
 const phoneContainer = document.getElementById('phone-container');
 phoneContainer.innerHTML ='';
+
+// show all///
+if(phones.length > 10){
+    phones = phones.slice(0,10);
+    const showAll = document.getElementById("show-all");
+    showAll.classList.remove('d-none');
+    showAll.classList.add('d-none');
+}
+
+
 // display 29 phone////
-phones = phones.slice(0,20);
 // "no-found-message"
 const noPhone = document.getElementById("no-found-message");
+
 if(phones.length === 0){
 noPhone.classList.remove('d-none');
 }
 else{
     noPhone.classList.add('d-none');
-}
+} 
 
 phones.forEach(phone => {
     console.log(phone);
