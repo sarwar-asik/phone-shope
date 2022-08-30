@@ -1,28 +1,29 @@
-console.log('Hi from app.js');
+// console.log('Hi from app.js');
 
-const loadPhone = async(searchField) =>{
-
-    const url = `https://openapi.programming-hero.com/api/phones?search=${searchField}`;
+const loadPhone = async(searchText,dataLimit) =>{
+    const url = `https://openapi.programming-hero.com/api/phones?search=${searchText}`;
     const res = await fetch(url);
     const data =  await res.json();
-    displayPhone(data.data);
-};
+    displayPhone(data.data, dataLimit);
+}
 
-const displayPhone = phones =>{
+const displayPhone = (phones , dataLimit) =>{
 // console.log(phone);
 const phoneContainer = document.getElementById('phone-container');
-phoneContainer.innerHTML ='';
+phoneContainer.textContent ='';
 
-// show all///
-if(phones.length > 10){
-    phones = phones.slice(0,10);
-    const showAll = document.getElementById("show-all");
-    showAll.classList.remove('d-none');
-    showAll.classList.add('d-none');
+//  show  all button  ///
+const showAll = document.getElementById("show-all");
+if(dataLimit && phones.length > 5){
+    phones = phones.slice(0, 5);
+    showAll.classList.remove('d-none')
+}
+else{
+    showAll.classList.add('d-none')
 }
 
 
-// display 29 phone////
+// display 20 phone////
 // "no-found-message"
 const noPhone = document.getElementById("no-found-message");
 
@@ -45,6 +46,9 @@ phoneDiv.innerHTML = `
                           <h4> ${phone.phone_name}</h4>
 
                           <p class="card-text">Slug: ${phone.slug}</p>
+                          
+                          <button onclick="loadPhoneDetail('${phone.slug}')" href="#" class="btn btn-info">Datail</button>
+
                         </div>
                       </div>
 `;
@@ -52,17 +56,33 @@ phoneContainer.appendChild(phoneDiv)
 });
 toggleSpiner(false);
 }
+
+/////this commmon function is for loader and show all button////
+const processSearch = (dataLimit)=>{
+    toggleSpiner(true);
+    const searchField = document.getElementById("search-field");
+    const searchText = searchField.value;
+    loadPhone(searchText,dataLimit)
+    
+}
+
 // search button click //////
 document.getElementById('btn-search').addEventListener('click',function(){
 // start loader ////
-toggleSpiner(true);
-const searchField = document.getElementById("search-field");
-const searchText = searchField.value;
-searchField.value = '';
-loadPhone(searchText)
+processSearch(5)
 
 })
+
+// search input enter key ///
+document.getElementById("search-field").addEventListener('keypress',function(e){
+
+    if(e.key === 'Enter'){
+        processSearch(5);
+    }
+});
  
+
+// loading/////
 const toggleSpiner = isLoading =>{
     const loaderSection = document.getElementById("loader");
     if(isLoading){
@@ -73,4 +93,26 @@ const toggleSpiner = isLoading =>{
     }
 }
 
-// loadPhone()
+
+
+// for show all  but it is not the best way ....
+document.getElementById("btn-show-all").addEventListener('click', function(){
+    processSearch();
+    const searchField = document.getElementById("search-field");
+    searchField.value = '';
+    
+    })
+
+
+// for datail of  phone ////
+
+const loadPhoneDetail = async id =>{
+
+    const url = ` https://openapi.programming-hero.com/api/phone/${id}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    console.log(data.data);
+
+};
+
+// loadPhone('a')
