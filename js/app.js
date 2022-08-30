@@ -47,7 +47,8 @@ phoneDiv.innerHTML = `
 
                           <p class="card-text">Slug: ${phone.slug}</p>
                           
-                          <button onclick="loadPhoneDetail('${phone.slug}')" href="#" class="btn btn-info">Datail</button>
+                          <button onclick="loadPhoneDetail('${phone.slug}')" href="#" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#exampleModal">Datail</button>
+                          
 
                         </div>
                       </div>
@@ -111,8 +112,29 @@ const loadPhoneDetail = async id =>{
     const url = ` https://openapi.programming-hero.com/api/phone/${id}`;
     const res = await fetch(url);
     const data = await res.json();
-    console.log(data.data);
+    displayPhoneDetails(data.data);
 
 };
 
-// loadPhone('a')
+const displayPhoneDetails = phone =>{
+console.log(phone);
+const modalTittle = document.getElementById("exampleModalLabel");
+modalTittle.innerText = phone.name;
+const modalDetail = document.getElementById("modal-datile");
+modalDetail.innerText = phone.mainFeatures.displaySize;
+
+const modalImg = document.getElementById("modal-img");
+modalImg.textContent = '';
+const imgDiv = document.createElement('div');
+
+imgDiv.innerHTML = `
+<h6>Realease Date : ${phone.releaseDate ?phone.releaseDate : 'Upcoming Soon' }</h6>
+<h2> Mamory:${phone.mainFeatures.memory}</h2>
+<img  src="${phone.image}" alt="" sizes="" srcset="">
+<p>@Contact... www.SHSmartPhoneShope.com </p>`
+modalImg.appendChild(imgDiv);
+
+};
+
+
+loadPhone('a')
